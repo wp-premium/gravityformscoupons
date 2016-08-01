@@ -1,4 +1,13 @@
 ---------------------------------------------------------------------
+Version 2.3
+    - Added Dutch translation (nl_NL).  Credit: Maarten Emmerink
+    - Updated gform_coupon_script dependencies to include gform_gravityforms.
+    - Updated Coupon Code validation to only allow alphanumeric characters.
+    - Updated bulk actions and feed action links.
+    - Fixed issue where "undefined" was output before coupon markup when applying a coupon
+    - Fixed front-end JS error when attempting to remove an applied coupon if the coupon code includes special characters.
+
+---------------------------------------------------------------------
 Version 2.2
     - Added GF_Field_Coupon::get_value_export() to return entry value formatted as {couponName} ({couponCode}: {discount}). Multiple codes will be comma separated e.g. $50 OFF (50OFF: -$50.00), 25% OFF (25OFF: -$10.00). Used for entry exports and some framework based add-ons since GF 1.9.12.4.
     - Added required and custom validation message settings.

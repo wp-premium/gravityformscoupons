@@ -59,7 +59,7 @@ class GFCoupons extends GFFeedAddOn {
 				'handle'  => 'gform_coupon_script',
 				'src'     => $this->get_base_url() . "/js/coupons{$min}.js",
 				'version' => $this->_version,
-				'deps'    => array( 'jquery', 'gform_json' ),
+				'deps'    => array( 'jquery', 'gform_json', 'gform_gravityforms' ),
 				'enqueue' => array( array( 'field_types' => array( 'coupon' ) ) ),
 				'strings' => array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) )
 			),
@@ -311,6 +311,9 @@ class GFCoupons extends GFFeedAddOn {
 		add_action( 'gform_editor_js_set_default_values', array( $this, 'set_defaults' ) );
 		add_filter( $this->_slug . '_feed_actions', array( $this, 'set_action_links' ), 10, 3 );
 
+		// don't duplicate feeds with the form, feed duplication not currently supported.
+		remove_action( 'gform_post_form_duplicated', array( $this, 'post_form_duplicated' ) );
+
 	}
 
 	/**
@@ -461,19 +464,25 @@ class GFCoupons extends GFFeedAddOn {
 			$form_id              = rgar( $item, 'form_id' );
 			$edit_url             = add_query_arg( array( 'id' => $form_id, 'fid' => $feed_id ) );
 			$action_links['edit'] = '<a title="' . esc_attr__( 'Edit this feed', 'gravityformscoupons' ) . '" href="' . esc_url( $edit_url ) . '">' . esc_html__( 'Edit', 'gravityformscoupons' ) . '</a>';
+
+			// feed duplication not currently supported.
+			unset( $action_links['duplicate'] );
+
 		}
 
 		return $action_links;
 	}
 
 	/**
-	 * Adds the reset usage count choice to the bulk actions menu on the coupon feeds page.
+	 * Defines choices available in the bulk actions menu on the coupon feeds page.
 	 *
 	 * @return array
 	 */
 	public function get_bulk_actions() {
-		$bulk_actions                = parent::get_bulk_actions();
-		$bulk_actions['reset_count'] = esc_html__( 'Reset Usage Count', 'gravityformscoupons' );
+		$bulk_actions = array(
+				'delete'      => esc_html__( 'Delete', 'gravityforms' ),
+				'reset_count' => esc_html__( 'Reset Usage Count', 'gravityformscoupons' )
+		);
 
 		return $bulk_actions;
 	}
@@ -868,12 +877,18 @@ class GFCoupons extends GFFeedAddOn {
 	}
 
 	/**
-	 * Validates the couponCode setting to ensure the entered coupon code is unique.
+	 * Validates the couponCode setting to ensure the entered coupon code is valid and unique.
 	 *
 	 * @param array $field The setting properties.
 	 */
 	public function check_if_duplicate_coupon_code( $field ) {
 		$settings = $this->get_posted_settings();
+
+		if ( ! ctype_alnum( $settings['couponCode'] ) ) {
+			$this->set_field_error( $field, esc_html__( 'Please enter a valid Coupon Code. The Coupon Code can only contain alphanumeric characters.', 'gravityformscoupons' ) );
+
+			return;
+		}
 
 		$feed['id']                 = $this->get_current_feed_id();
 		$feed['form_id']            = $settings['gravityForm'];

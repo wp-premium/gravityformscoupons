@@ -72,6 +72,7 @@ function PopulateDiscountInfo(price, formId) {
         coupon,
         couponDiscount,
         couponDetails = '',
+        safeCode,
         totalDiscount = 0,
         currency = new Currency(gf_global['gf_currency_config']);
 
@@ -83,7 +84,9 @@ function PopulateDiscountInfo(price, formId) {
         coupon = window['gf_coupons' + formId][code];
         couponDiscount = GetDiscount(coupon['type'], coupon['amount'], price, totalDiscount);
         totalDiscount += couponDiscount;
-        couponDetails += '<tr class="gf_coupon_item" id="gf_coupon_' + coupon['code'] + '"><td class="gf_coupon_name_container">' +
+        safeCode = coupon.code.replace(/[^A-Za-z0-9]/g, '');
+
+        couponDetails += '<tr class="gf_coupon_item" id="gf_coupon_' + safeCode + '"><td class="gf_coupon_name_container">' +
         '   <a href="javascript:void(0);" onclick="DeleteCoupon(\'' + coupon['code'] + '\' , \'' + formId + '\');">(x)</a>' +
         '   <span class="gf_coupon_name">' + coupon['name'] + '</span>' +
         '</td><td class="gf_coupon_discount_container">' +
@@ -136,8 +139,10 @@ function DeleteCoupon(code, formId) {
         return;
     }
 
+    var safeCode = code.replace(/[^A-Za-z0-9]/g, '');
+
     // removing coupon from UI
-    jQuery('#gf_coupons_container_' + formId + ' #gf_coupon_' + code).remove();
+    jQuery('#gf_coupons_container_' + formId + ' #gf_coupon_' + safeCode).remove();
     jQuery('#gf_coupons_container_' + formId + ' #gf_coupon_spinner').show();
     jQuery('#gf_coupons_container_' + formId + ' #gf_coupon_button').prop('disabled', true);
 

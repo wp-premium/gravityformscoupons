@@ -1,4 +1,12 @@
 ---------------------------------------------------------------------
+Version 2.4
+    - Added gform_coupons_is_valid_code to override coupon code alphanumeric checking in Gravity Forms 2.2.2.
+    - Updated coupons.js to use the gform_product_total filter with a later priority.
+    - Updated how default label for new fields is set.
+	- Fixed wrong domain for translating the "Coupon" button.
+    - Fixed an issue with the formatting of the percentage coupon amount when a decimal comma based currency is in use.
+
+---------------------------------------------------------------------
 Version 2.3
     - Added Dutch translation (nl_NL).  Credit: Maarten Emmerink
     - Updated gform_coupon_script dependencies to include gform_gravityforms.

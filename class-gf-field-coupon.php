@@ -15,7 +15,7 @@ class GF_Field_Coupon extends GF_Field {
 	 * @return string
 	 */
 	public function get_form_editor_field_title() {
-		return __( 'Coupon', 'gravityformscoupon' );
+		return __( 'Coupon', 'gravityformscoupons' );
 	}
 
 	/**
@@ -149,12 +149,14 @@ class GF_Field_Coupon extends GF_Field {
 	}
 
 	/**
-	 * Include the gform_form_editor_can_field_be_added script on the form editor page.
+	 * Include the gform_form_editor_can_field_be_added script on the form editor page and set the default label for new fields.
 	 *
 	 * @return string
 	 */
 	public function get_form_editor_inline_script_on_page_render() {
-		return "
+		$script = sprintf( "function SetDefaultValues_%s(field) {field.label = '%s';}", $this->type, $this->get_form_editor_field_title() ) . PHP_EOL;
+
+		$script .= "
 		gform.addFilter('gform_form_editor_can_field_be_added', function (canFieldBeAdded, type) {
 			if (type == 'coupon') {
 				if (GetFieldsByType(['product']).length <= 0) {
@@ -170,6 +172,8 @@ class GF_Field_Coupon extends GF_Field {
 			}
 			return canFieldBeAdded;
 		});";
+
+		return $script;
 	}
 
 	/**

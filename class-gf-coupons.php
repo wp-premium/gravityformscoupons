@@ -308,23 +308,11 @@ class GFCoupons extends GFFeedAddOn {
 	public function init_admin() {
 
 		parent::init_admin();
-		add_action( 'gform_editor_js_set_default_values', array( $this, 'set_defaults' ) );
 		add_filter( $this->_slug . '_feed_actions', array( $this, 'set_action_links' ), 10, 3 );
 
 		// don't duplicate feeds with the form, feed duplication not currently supported.
 		remove_action( 'gform_post_form_duplicated', array( $this, 'post_form_duplicated' ) );
 
-	}
-
-	/**
-	 * Sets the fields default label in the form editor.
-	 */
-	public function set_defaults() {
-		?>
-		case "coupon" :
-		field.label = <?php echo json_encode( esc_html__( 'Coupon', 'gravityformscoupons' ) ); ?>;
-		break;
-		<?php
 	}
 
 	/**
@@ -580,7 +568,8 @@ class GFCoupons extends GFFeedAddOn {
 		if ( $feed['meta']['couponAmountType'] == 'flat' ) {
 			$couponAmount = GFCommon::to_money( $feed['meta']['couponAmount'] );
 		} else {
-			$couponAmount = GFCommon::to_number( $feed['meta']['couponAmount'] ) . '%';
+			$number_format = GFCommon::is_currency_decimal_dot() ? 'decimal_dot' : 'decimal_comma';
+			$couponAmount  = GFCommon::format_number( $feed['meta']['couponAmount'], $number_format ) . '%';
 		}
 
 		return $couponAmount;
@@ -780,17 +769,16 @@ class GFCoupons extends GFFeedAddOn {
 					</style>';
 
 		$js_script = '<script type="text/javascript">
-							var currency_config = ' . json_encode( RGCurrency::get_currency( GFCommon::get_currency() ) ) . ';
-							var form = Array();
-								jQuery(document).on(\'change\', \'.gf_format_money\', function(){
-									var cur = new Currency(currency_config)
-									jQuery(this).val(cur.toMoney(jQuery(this).val()));
-								});
-								jQuery(document).on(\'change\', \'.gf_format_percentage\', function(event){
-									var cur = new Currency(currency_config)
-									var value = cur.toNumber(jQuery(this).val()) ? cur.toNumber(jQuery(this).val()) + \'%\' : \'\';
-									jQuery(this).val( value );
-								});
+                            jQuery(document).on(\'change\', \'.gf_format_money\', function(){
+                                var cur = new Currency(gf_vars.gf_currency_config);
+                                jQuery(this).val(cur.toMoney(jQuery(this).val()));
+                            });
+                            jQuery(document).on(\'change\', \'.gf_format_percentage\', function(event){
+                                var cur = new Currency(gf_vars.gf_currency_config),
+                                    cleanNum = cur.toNumber(jQuery(this).val()),
+                                    value = cleanNum ? cur.numberFormat(cleanNum, cur.currency["decimals"], cur.currency["decimal_separator"], cur.currency["thousand_separator"]) + \'%\' : \'\';
+                                jQuery(this).val( value );
+                            });
 
 							function SetCouponType(elem) {
 								var type = elem.val();
@@ -807,15 +795,14 @@ class GFCoupons extends GFFeedAddOn {
 								jQuery(\'#couponAmount\').attr("placeholder",placeholderText);
 
 								//format initial coupon amount value when there is one and it is currency
-								var currency_config = ' . json_encode( RGCurrency::get_currency( GFCommon::get_currency() ) ) . ';
-								var cur = new Currency(currency_config);
-								couponAmount = jQuery(\'#couponAmount\').val();
+								var cur = new Currency(gf_vars.gf_currency_config),
+								    couponAmount = jQuery(\'#couponAmount\').val();
 								if ( couponAmount ){
 									if (type == \'flat\'){
 										couponAmount = cur.toMoney(couponAmount);
 									}
 									else{
-										couponAmount = cur.toNumber(couponAmount) + \'%\';
+										couponAmount = cur.numberFormat(couponAmount, cur.currency["decimals"], cur.currency["decimal_separator"], cur.currency["thousand_separator"]) + \'%\';
 									}
 									jQuery(\'#couponAmount\').val(couponAmount);
 								}
@@ -884,7 +871,19 @@ class GFCoupons extends GFFeedAddOn {
 	public function check_if_duplicate_coupon_code( $field ) {
 		$settings = $this->get_posted_settings();
 
-		if ( ! ctype_alnum( $settings['couponCode'] ) ) {
+		$is_alphanumeric = ctype_alnum( $settings['couponCode'] );
+
+		/**
+		 * Overrides coupon code validation.
+		 *
+		 * @since 2.3.3
+		 *
+		 * @param bool  $is_alphanumeric If the coupon code is alphanumeric.
+		 * @param array $field           The Field Object.
+		 */
+		$is_valid_coupon = apply_filters( 'gform_coupons_is_valid_code', $is_alphanumeric, $field );
+
+		if ( ! $is_valid_coupon ) {
 			$this->set_field_error( $field, esc_html__( 'Please enter a valid Coupon Code. The Coupon Code can only contain alphanumeric characters.', 'gravityformscoupons' ) );
 
 			return;

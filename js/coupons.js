@@ -90,7 +90,7 @@ function PopulateDiscountInfo(price, formId) {
         '   <a href="javascript:void(0);" onclick="DeleteCoupon(\'' + coupon['code'] + '\' , \'' + formId + '\');">(x)</a>' +
         '   <span class="gf_coupon_name">' + coupon['name'] + '</span>' +
         '</td><td class="gf_coupon_discount_container">' +
-        '   <span class="gf_coupon_discount">-' + currency.toMoney(couponDiscount) + '</span>' +
+        '   <span class="gf_coupon_discount">-' + currency.toMoney(couponDiscount,true) + '</span>' +
         '</td></tr>';
     }
 
@@ -109,8 +109,8 @@ function DisableApplyButton(formId) {
     }
 }
 
-function gform_product_total(formId, total) {
-    // ignore forms that don't have a coupon field
+gform.addFilter('gform_product_total', function (total, formId) {
+    // Ignore forms that don't have a coupon field.
     if (jQuery('#gf_coupon_code_' + formId).length == 0) {
         return total;
     }
@@ -131,7 +131,7 @@ function gform_product_total(formId, total) {
     DisableApplyButton(formId);
 
     return new_total;
-}
+}, 50);
 
 function DeleteCoupon(code, formId) {
     // check if coupon code is in the process of being applied

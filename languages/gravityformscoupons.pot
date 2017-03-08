@@ -1,9 +1,9 @@
 # Copyright 2009-2017 Rocketgenius, Inc.
 msgid ""
 msgstr ""
-"Project-Id-Version: Gravity Forms Coupons Add-On 2.4\n"
+"Project-Id-Version: Gravity Forms Coupons Add-On 2.5\n"
 "Report-Msgid-Bugs-To: http://www.gravtiyhelp.com\n"
-"POT-Creation-Date: 2017-01-05 19:25:39+00:00\n"
+"POT-Creation-Date: 2017-02-22 21:31:33+00:00\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -28,190 +28,190 @@ msgstr ""
 msgid "Coupon Code:"
 msgstr ""
 
-#: class-gf-coupons.php:250
+#: class-gf-coupons.php:251
 msgid "You must enter a value for coupon code."
 msgstr ""
 
-#: class-gf-coupons.php:264 class-gf-coupons.php:1042 class-gf-coupons.php:1151
+#: class-gf-coupons.php:265 class-gf-coupons.php:1043 class-gf-coupons.php:1152
 msgid "Invalid coupon."
 msgstr ""
 
-#: class-gf-coupons.php:326
+#: class-gf-coupons.php:327
 msgid ""
 "The %s has been successfully uninstalled. It can be re-activated from the "
 "%splugins page%s."
 msgstr ""
 
-#: class-gf-coupons.php:454
+#: class-gf-coupons.php:455
 msgid "Edit this feed"
 msgstr ""
 
-#: class-gf-coupons.php:454
+#: class-gf-coupons.php:455
 msgid "Edit"
 msgstr ""
 
-#: class-gf-coupons.php:471
+#: class-gf-coupons.php:472
 msgid "Delete"
 msgstr ""
 
-#: class-gf-coupons.php:472
+#: class-gf-coupons.php:473
 msgid "Reset Usage Count"
 msgstr ""
 
-#: class-gf-coupons.php:507
+#: class-gf-coupons.php:508
 msgid "Title"
 msgstr ""
 
-#: class-gf-coupons.php:508
+#: class-gf-coupons.php:509
 msgid "Form"
 msgstr ""
 
-#: class-gf-coupons.php:509
+#: class-gf-coupons.php:510
 msgid "Amount"
 msgstr ""
 
-#: class-gf-coupons.php:510 class-gf-coupons.php:698 class-gf-coupons.php:700
+#: class-gf-coupons.php:511 class-gf-coupons.php:699 class-gf-coupons.php:701
 msgid "Usage Limit"
 msgstr ""
 
-#: class-gf-coupons.php:511 class-gf-coupons.php:716
+#: class-gf-coupons.php:512 class-gf-coupons.php:717
 msgid "Usage Count"
 msgstr ""
 
-#: class-gf-coupons.php:512
+#: class-gf-coupons.php:513
 msgid "Expires"
 msgstr ""
 
-#: class-gf-coupons.php:513 class-gf-coupons.php:704 class-gf-coupons.php:706
-#: class-gf-coupons.php:709
+#: class-gf-coupons.php:514 class-gf-coupons.php:705 class-gf-coupons.php:707
+#: class-gf-coupons.php:710
 msgid "Is Stackable"
 msgstr ""
 
-#: class-gf-coupons.php:548 class-gf-coupons.php:735
+#: class-gf-coupons.php:549 class-gf-coupons.php:736
 msgid "Any Form"
 msgstr ""
 
-#: class-gf-coupons.php:553
+#: class-gf-coupons.php:554
 msgid "Invalid Form"
 msgstr ""
 
-#: class-gf-coupons.php:634
+#: class-gf-coupons.php:635
 msgid "Applies to Which Form?"
 msgstr ""
 
-#: class-gf-coupons.php:639 class-gf-coupons.php:643
+#: class-gf-coupons.php:640 class-gf-coupons.php:644
 msgid "Gravity Form"
 msgstr ""
 
-#: class-gf-coupons.php:643
+#: class-gf-coupons.php:644
 msgid "Select the Gravity Form you would like to integrate with Coupons."
 msgstr ""
 
-#: class-gf-coupons.php:648
+#: class-gf-coupons.php:649
 msgid "Coupon Basics"
 msgstr ""
 
-#: class-gf-coupons.php:654 class-gf-coupons.php:657
+#: class-gf-coupons.php:655 class-gf-coupons.php:658
 msgid "Coupon Name"
 msgstr ""
 
-#: class-gf-coupons.php:657
+#: class-gf-coupons.php:658
 msgid "Enter coupon name."
 msgstr ""
 
-#: class-gf-coupons.php:661 class-gf-coupons.php:665
+#: class-gf-coupons.php:662 class-gf-coupons.php:666
 msgid "Coupon Code"
 msgstr ""
 
-#: class-gf-coupons.php:665
+#: class-gf-coupons.php:666
 msgid "Enter the value users should enter to apply this coupon to the form total."
 msgstr ""
 
-#: class-gf-coupons.php:669 class-gf-coupons.php:673
+#: class-gf-coupons.php:670 class-gf-coupons.php:674
 msgid "Coupon Amount"
 msgstr ""
 
-#: class-gf-coupons.php:673
+#: class-gf-coupons.php:674
 msgid "Enter the amount to be deducted from the form total."
 msgstr ""
 
-#: class-gf-coupons.php:678
+#: class-gf-coupons.php:679
 msgid "Coupon Options"
 msgstr ""
 
-#: class-gf-coupons.php:684 class-gf-coupons.php:686
+#: class-gf-coupons.php:685 class-gf-coupons.php:687
 msgid "Start Date"
 msgstr ""
 
-#: class-gf-coupons.php:686
+#: class-gf-coupons.php:687
 msgid "Enter the date when the coupon should start."
 msgstr ""
 
-#: class-gf-coupons.php:691 class-gf-coupons.php:693
+#: class-gf-coupons.php:692 class-gf-coupons.php:694
 msgid "End Date"
 msgstr ""
 
-#: class-gf-coupons.php:693
+#: class-gf-coupons.php:694
 msgid "Enter the date when the coupon should expire."
 msgstr ""
 
-#: class-gf-coupons.php:700
+#: class-gf-coupons.php:701
 msgid "Enter the number of times coupon code can be used."
 msgstr ""
 
-#: class-gf-coupons.php:706
+#: class-gf-coupons.php:707
 msgid ""
 "When the \"Is Stackable\" option is selected, this coupon code will be "
 "allowed to be used in conjunction with another coupon code."
 msgstr ""
 
-#: class-gf-coupons.php:734
+#: class-gf-coupons.php:735
 msgid "Select a Form"
 msgstr ""
 
-#: class-gf-coupons.php:824
+#: class-gf-coupons.php:825
 msgid "Flat"
 msgstr ""
 
-#: class-gf-coupons.php:829
+#: class-gf-coupons.php:830
 msgid "Percentage(%)"
 msgstr ""
 
-#: class-gf-coupons.php:862
+#: class-gf-coupons.php:863
 msgid "This field is required."
 msgstr ""
 
-#: class-gf-coupons.php:887
+#: class-gf-coupons.php:888
 msgid ""
 "Please enter a valid Coupon Code. The Coupon Code can only contain "
 "alphanumeric characters."
 msgstr ""
 
-#: class-gf-coupons.php:899
+#: class-gf-coupons.php:900
 msgid ""
 "The Coupon Code entered is already in use. Please enter a unique Coupon "
 "Code and try again."
 msgstr ""
 
-#: class-gf-coupons.php:1053
+#: class-gf-coupons.php:1054
 msgid "This coupon can't be applied more than once."
 msgstr ""
 
-#: class-gf-coupons.php:1064
+#: class-gf-coupons.php:1065
 msgid ""
 "This coupon can't be used in conjunction with other coupons you have "
 "already entered."
 msgstr ""
 
-#: class-gf-coupons.php:1139
+#: class-gf-coupons.php:1140
 msgid "This coupon is currently inactive."
 msgstr ""
 
-#: class-gf-coupons.php:1158
+#: class-gf-coupons.php:1159
 msgid "This coupon has expired."
 msgstr ""
 
-#: class-gf-coupons.php:1170
+#: class-gf-coupons.php:1171
 msgid "This coupon has reached its usage limit."
 msgstr ""
 

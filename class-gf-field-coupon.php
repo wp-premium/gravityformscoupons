@@ -130,7 +130,7 @@ class GF_Field_Coupon extends GF_Field {
 
 			$feed = gf_coupons()->get_config( $form, $coupon_code );
 			if ( ! $feed ) {
-				$message = sprintf( esc_html__( 'Coupon code: %s is invalid.', 'gravityformscoupons' ), $coupon_code );
+				$message = sprintf( esc_html__( 'Coupon code: %s is invalid.', 'gravityformscoupons' ), esc_html( $coupon_code ) );
 				break;
 			}
 

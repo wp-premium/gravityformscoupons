@@ -148,7 +148,8 @@ class GFCoupons extends GFFeedAddOn {
 						'option_label' => esc_html__( 'Coupon Code:', 'gravityformscoupons' ) . ' ' . $coupon['code'],
 						'price'        => 0,
 					),
-				)
+				),
+				'isCoupon' => true,
 			);
 		}
 

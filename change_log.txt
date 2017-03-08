@@ -1,4 +1,9 @@
 ---------------------------------------------------------------------
+Version 2.5
+    - Added security enhancement.
+    - Added 'isCoupon' flag when adding coupons to order summary; allows 3rd parties to more reliable identify coupons in the order summary.
+
+---------------------------------------------------------------------
 Version 2.4
     - Added gform_coupons_is_valid_code to override coupon code alphanumeric checking in Gravity Forms 2.2.2.
     - Updated coupons.js to use the gform_product_total filter with a later priority.

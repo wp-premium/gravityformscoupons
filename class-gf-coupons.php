@@ -61,15 +61,15 @@ class GFCoupons extends GFFeedAddOn {
 				'version' => $this->_version,
 				'deps'    => array( 'jquery', 'gform_json', 'gform_gravityforms' ),
 				'enqueue' => array( array( 'field_types' => array( 'coupon' ) ) ),
-				'strings' => array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) )
+				'strings' => array( 'ajaxurl' => admin_url( 'admin-ajax.php' ) ),
 			),
 			array(
 				'handle'  => 'gform_form_admin',
-				'enqueue' => array( array( 'admin_page' => array( 'plugin_page' ) ) )
+				'enqueue' => array( array( 'admin_page' => array( 'plugin_page' ) ) ),
 			),
 			array(
 				'handle'  => 'gform_gravityforms',
-				'enqueue' => array( array( 'admin_page' => array( 'plugin_page' ) ) )
+				'enqueue' => array( array( 'admin_page' => array( 'plugin_page' ) ) ),
 			),
 		);
 
@@ -88,13 +88,13 @@ class GFCoupons extends GFFeedAddOn {
 				'handle'  => 'gform_coupon_style',
 				'src'     => $this->get_base_url() . "/css/gcoupons{$min}.css",
 				'version' => $this->_version,
-				'enqueue' => array( array( 'field_types' => array( 'coupon' ) ) )
+				'enqueue' => array( array( 'field_types' => array( 'coupon' ) ) ),
 			),
 			array(
 				'handle'  => 'gform_admin',
 				'src'     => GFCommon::get_base_url() . "/css/admin{$min}.css",
 				'version' => $this->_version,
-				'enqueue' => array( array( 'admin_page' => array( 'plugin_page' ) ) )
+				'enqueue' => array( array( 'admin_page' => array( 'plugin_page' ) ) ),
 			),
 		);
 
@@ -399,7 +399,7 @@ class GFCoupons extends GFFeedAddOn {
 		// Save feed if appropriate
 		$feed_fields = $this->get_feed_settings_fields();
 
-		$feed_id = $this->maybe_save_feed_settings( $feed_id, '' );
+		$feed_id = absint( $this->maybe_save_feed_settings( $feed_id, '' ) );
 
 		$this->_coupon_feed_id = $feed_id;
 
@@ -411,7 +411,7 @@ class GFCoupons extends GFFeedAddOn {
 
 		?>
 		<h3><span><?php echo $this->feed_settings_title() ?></span></h3>
-		<input type="hidden" name="gf_feed_id" value="<?php echo $feed_id ?>"/>
+		<input type="hidden" name="gf_feed_id" value="<?php echo esc_attr( $feed_id ) ?>"/>
 
 		<?php
 		$this->set_settings( $feed['meta'] );
@@ -641,7 +641,7 @@ class GFCoupons extends GFFeedAddOn {
 						'type'     => 'select',
 						'onchange' => 'jQuery(this).parents("form").submit();',
 						'choices'  => $this->get_gravity_forms(),
-						'tooltip'  => '<h6>' . esc_html__( 'Gravity Form', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Select the Gravity Form you would like to integrate with Coupons.', 'gravityformscoupons' )
+						'tooltip'  => '<h6>' . esc_html__( 'Gravity Form', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Select the Gravity Form you would like to integrate with Coupons.', 'gravityformscoupons' ),
 					),
 				)
 			),
@@ -663,7 +663,7 @@ class GFCoupons extends GFFeedAddOn {
 						'type'                => 'text',
 						'required'            => true,
 						'validation_callback' => array( $this, 'check_if_duplicate_coupon_code' ),
-						'tooltip'             => '<h6>' . esc_html__( 'Coupon Code', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the value users should enter to apply this coupon to the form total.', 'gravityformscoupons' )
+						'tooltip'             => '<h6>' . esc_html__( 'Coupon Code', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the value users should enter to apply this coupon to the form total.', 'gravityformscoupons' ),
 					),
 					array(
 						'name'                => 'couponAmountType',
@@ -671,7 +671,7 @@ class GFCoupons extends GFFeedAddOn {
 						'type'                => 'coupon_amount_type',
 						'required'            => true,
 						'validation_callback' => array( $this, 'validate_coupon_amount' ),
-						'tooltip'             => '<h6>' . esc_html__( 'Coupon Amount', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the amount to be deducted from the form total.', 'gravityformscoupons' )
+						'tooltip'             => '<h6>' . esc_html__( 'Coupon Amount', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the amount to be deducted from the form total.', 'gravityformscoupons' ),
 					),
 				)
 			),
@@ -698,7 +698,7 @@ class GFCoupons extends GFFeedAddOn {
 						'name'    => 'usageLimit',
 						'label'   => __( 'Usage Limit', 'gravityformscoupons' ),
 						'type'    => 'text',
-						'tooltip' => '<h6>' . esc_html__( 'Usage Limit', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the number of times coupon code can be used.', 'gravityformscoupons' )
+						'tooltip' => '<h6>' . esc_html__( 'Usage Limit', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the number of times coupon code can be used.', 'gravityformscoupons' ),
 					),
 					array(
 						'name'    => 'isStackable',
@@ -710,7 +710,7 @@ class GFCoupons extends GFFeedAddOn {
 								'label' => esc_html__( 'Is Stackable', 'gravityformscoupons' ),
 								'name'  => 'isStackable',
 							),
-						)
+						),
 					),
 					array(
 						'name'  => 'usageCount',
@@ -758,7 +758,7 @@ class GFCoupons extends GFFeedAddOn {
 
 		require_once( GFCommon::get_base_path() . '/currency.php' );
 		$currency        = RGCurrency::get_currency( GFCommon::get_currency() );
-		$currency_symbol = ! empty ( $currency['symbol_left'] ) ? $currency['symbol_left'] : $currency['symbol_right'];
+		$currency_symbol = ! empty( $currency['symbol_left'] ) ? $currency['symbol_left'] : $currency['symbol_right'];
 
 		wp_enqueue_script( array( 'jquery-ui-datepicker' ) );
 
@@ -824,12 +824,12 @@ class GFCoupons extends GFFeedAddOn {
 			array(
 				'label' => esc_html__( 'Flat', 'gravityformscoupons' ) . '(' . $currency_symbol . ')',
 				'name'  => 'flat',
-				'value' => 'flat'
+				'value' => 'flat',
 			),
 			array(
 				'label' => esc_html__( 'Percentage(%)', 'gravityformscoupons' ),
 				'name'  => 'percentage',
-				'value' => 'percentage'
+				'value' => 'percentage',
 			),
 		);
 		$field['onchange'] = 'SetCouponType(jQuery(this))';
@@ -954,7 +954,6 @@ class GFCoupons extends GFFeedAddOn {
 				if ( ! empty( $feed['form_id'] ) && $feed['form_id'] != 0 ) {
 					return true;
 				}
-
 			}
 
 			// return true if coupon code is already associated with another specific form
@@ -1360,9 +1359,9 @@ class GFCoupons extends GFFeedAddOn {
 
 				$is_active = $old_feed['is_active'];
 
-				$couponAmount = rgar( $old_feed['meta'], 'coupon_amount' );
-				if ( ! rgblank( $couponAmount ) ) {
-					$couponAmount = GFCommon::to_number( $couponAmount );
+				$coupon_amount = rgar( $old_feed['meta'], 'coupon_amount' );
+				if ( ! rgblank( $coupon_amount ) ) {
+					$coupon_amount = GFCommon::to_number( $coupon_amount );
 				}
 
 				$new_meta = array(
@@ -1370,7 +1369,7 @@ class GFCoupons extends GFFeedAddOn {
 					'gravityForm'      => $form_id,
 					'couponCode'       => rgar( $old_feed['meta'], 'coupon_code' ),
 					'couponAmountType' => rgar( $old_feed['meta'], 'coupon_type' ),
-					'couponAmount'     => $couponAmount,
+					'couponAmount'     => $coupon_amount,
 					'startDate'        => rgar( $old_feed['meta'], 'coupon_start' ),
 					'endDate'          => rgar( $old_feed['meta'], 'coupon_expiration' ),
 					'usageLimit'       => rgar( $old_feed['meta'], 'coupon_limit' ),

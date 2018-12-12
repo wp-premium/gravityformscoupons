@@ -1,16 +1,17 @@
 <?php
 /*
 Plugin Name: Gravity Forms Coupons Add-On
-Plugin URI: http://www.gravityforms.com
+Plugin URI: https://www.gravityforms.com
 Description: Enables Gravity Forms administrators to create coupon codes that can be applied to products, services or subscriptions when used in conjunction with a payment add-on such as PayPal and Authorize.net
-Version: 2.6
+Version: 2.8
 Author: rocketgenius
-Author URI: http://www.rocketgenius.com
+Author URI: https://www.rocketgenius.com
+License: GPL-2.0+
 Text Domain: gravityformscoupons
 Domain Path: /languages
 
 ------------------------------------------------------------------------
-Copyright 2009-2016 rocketgenius
+Copyright 2009-2018 rocketgenius
 
 This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,7 +28,7 @@ along with this program; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 */
 
-define( 'GF_COUPONS_VERSION', '2.6' );
+define( 'GF_COUPONS_VERSION', '2.8' );
 
 add_action( 'gform_loaded', array( 'GF_Coupons_Bootstrap', 'load' ), 5 );
 

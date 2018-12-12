@@ -133,7 +133,7 @@ class GFCoupons extends GFFeedAddOn {
 		$total = GFCommon::get_total( $product_info );
 
 		$coupons   = $this->get_coupons_by_codes( $coupon_codes, $form );
-		$discounts = $this->get_discounts( $coupons, $total, $discount_total );
+		$discounts = $this->get_discounts( $coupons, $total, $discount_total, $entry );
 
 		foreach ( $coupons as $coupon ) {
 
@@ -681,18 +681,20 @@ class GFCoupons extends GFFeedAddOn {
 				'dependency'  => 'gravityForm',
 				'fields'      => array(
 					array(
-						'name'    => 'startDate',
-						'label'   => esc_html__( 'Start Date', 'gravityformscoupons' ),
-						'type'    => 'text',
-						'tooltip' => '<h6>' . esc_html__( 'Start Date', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the date when the coupon should start.', 'gravityformscoupons' ),
-						'class'   => 'datepicker',
+						'name'                => 'startDate',
+						'label'               => esc_html__( 'Start Date', 'gravityformscoupons' ),
+						'type'                => 'text',
+						'tooltip'             => '<h6>' . esc_html__( 'Start Date', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the date when the coupon should start. Format: YYYY-MM-DD.', 'gravityformscoupons' ),
+						'class'               => 'datepicker',
+						'validation_callback' => array( $this, 'validate_coupon_date' ),
 					),
 					array(
-						'name'    => 'endDate',
-						'label'   => esc_html__( 'End Date', 'gravityformscoupons' ),
-						'type'    => 'text',
-						'tooltip' => '<h6>' . esc_html__( 'End Date', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the date when the coupon should expire.', 'gravityformscoupons' ),
-						'class'   => 'datepicker',
+						'name'                => 'endDate',
+						'label'               => esc_html__( 'End Date', 'gravityformscoupons' ),
+						'type'                => 'text',
+						'tooltip'             => '<h6>' . esc_html__( 'End Date', 'gravityformscoupons' ) . '</h6>' . esc_html__( 'Enter the date when the coupon should expire. Format: YYYY-MM-DD.', 'gravityformscoupons' ),
+						'class'               => 'datepicker',
+						'validation_callback' => array( $this, 'validate_coupon_date' ),
 					),
 					array(
 						'name'    => 'usageLimit',
@@ -800,7 +802,7 @@ class GFCoupons extends GFFeedAddOn {
 								    couponAmount = jQuery(\'#couponAmount\').val();
 								if ( couponAmount ){
 									if (type == \'flat\'){
-										couponAmount = cur.toMoney(couponAmount);
+										couponAmount = cur.toMoney(couponAmount, true);
 									}
 									else{
 										couponAmount = cur.numberFormat(couponAmount, cur.currency["decimals"], cur.currency["decimal_separator"], cur.currency["thousand_separator"]) + \'%\';
@@ -811,7 +813,7 @@ class GFCoupons extends GFFeedAddOn {
 								jQuery(\'.datepicker\').each(
 									function (){
 										var image = "' . $this->get_base_url() . '/images/calendar.png";
-										jQuery(this).datepicker({showOn: "both", buttonImage: image, buttonImageOnly: true, dateFormat: "mm/dd/yy" });
+										jQuery(this).datepicker({showOn: "both", buttonImage: image, buttonImageOnly: true, dateFormat: "yy-mm-dd" });
 									}
 								);
 
@@ -861,6 +863,25 @@ class GFCoupons extends GFFeedAddOn {
 
 		if ( empty( $settings['couponAmount'] ) ) {
 			$this->set_field_error( array( 'name' => 'couponAmount' ), esc_html__( 'This field is required.', 'gravityformscoupons' ) );
+		}
+	}
+
+	/**
+	 * Validates the start and end date settings.
+	 *
+	 * @param array $field The setting properties.
+	 */
+	public function validate_coupon_date( $field ) {
+		$settings = $this->get_posted_settings();
+		$name     = $field['name'];
+
+		if ( ! empty( $settings[ $name ] ) ) {
+			$date     = $settings[ $name ];
+			$dateTime = DateTime::createFromFormat( '!Y-m-d', $date );
+
+			if ( ! $dateTime || $date != $dateTime->format( 'Y-m-d' ) ) {
+				$this->set_field_error( array( 'name' => $name ), esc_html__( 'Please enter a valid date. Format: YYYY-MM-DD.', 'gravityformscoupons' ) );
+			}
 		}
 	}
 
@@ -1218,13 +1239,16 @@ class GFCoupons extends GFFeedAddOn {
 	/**
 	 * Generates an array containing the details of the applied coupons, including the discount amounts.
 	 *
-	 * @param array $coupons The coupons to be applied to the form total.
-	 * @param float|integer $total The form total.
-	 * @param float $discount_total The total discount.
+	 * @since 2.6.3 Added $entry as the fourth parameter.
+	 *
+	 * @param array         $coupons        The coupons to be applied to the form total.
+	 * @param float|integer $total          The form total.
+	 * @param float         $discount_total The total discount.
+	 * @param array         $entry          The current entry.
 	 *
 	 * @return array
 	 */
-	public function get_discounts( $coupons, &$total = 0, &$discount_total ) {
+	public function get_discounts( $coupons, &$total = 0, &$discount_total, $entry = array() ) {
 		$coupons = $this->sort_coupons( $coupons );
 
 		$discount_total = 0;
@@ -1232,9 +1256,7 @@ class GFCoupons extends GFFeedAddOn {
 
 		foreach ( $coupons as $coupon ) {
 
-			$discount = 0;
-
-			$discount = $this->get_discount( $coupon, $total );
+			$discount = $this->get_discount( $coupon, $total, $entry );
 
 			$discount_total += $discount;
 
@@ -1254,12 +1276,15 @@ class GFCoupons extends GFFeedAddOn {
 	/**
 	 * Calculates the current coupons discount amount.
 	 *
+	 * @since 2.6.3 Added $entry as the third parameter.
+	 *
 	 * @param array $coupon The coupon config.
-	 * @param float $price The form total.
+	 * @param float $price  The form total.
+	 * @param array $entry  The current entry.
 	 *
 	 * @return float
 	 */
-	public function get_discount( $coupon, $price ) {
+	public function get_discount( $coupon, $price, $entry = array() ) {
 		if ( $coupon['type'] == 'flat' ) {
 			$discount = GFCommon::to_number( $coupon['amount'] );
 		} else {
@@ -1267,7 +1292,19 @@ class GFCoupons extends GFFeedAddOn {
 		}
 
 		$discount = $price - $discount >= 0 ? $discount : $price;
-		$discount = apply_filters( 'gform_coupons_discount_amount', $discount, $coupon, $price );
+
+		/**
+		 * Enables the discount amount to be overridden.
+		 *
+		 * @since 2.6.3 Added $entry as the fourth parameter.
+		 * @since 2.0
+		 *
+		 * @param float $discount The discount amount.
+		 * @param array $coupon   The coupon config.
+		 * @param float $price    The form total.
+		 * @param array $entry    The current entry.
+		 */
+		$discount = apply_filters( 'gform_coupons_discount_amount', $discount, $coupon, $price, $entry );
 
 		return $discount;
 	}

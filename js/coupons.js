@@ -188,3 +188,15 @@ gform.addAction('gform_post_conditional_logic_field_action', function (formId, a
         }
     }
 });
+
+// Add support for GF 2.4 conditional logic by intercepting field meta when the coupon codes input is changed and
+// populating correct field ID and form ID.
+gform.addFilter( 'gform_field_meta_raw_input_change', function( fieldMeta, $input, event ) {
+
+	if( $input.attr( 'id' ).indexOf( 'gf_coupon_codes_' ) === 0 ) {
+		fieldMeta.fieldId = $input.attr( 'name' ).split( '_' )[1];
+		fieldMeta.formId  = $input.attr( 'id' ).split( '_' )[3];
+	}
+
+	return fieldMeta;
+} );

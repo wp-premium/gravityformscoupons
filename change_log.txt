@@ -1,3 +1,14 @@
+# 2.8 | 2018-11-30
+   - Added support for GF 2.4 conditional logic.
+
+# 2.7 | 2018-11-02
+   - Added $entry as the fourth parameter of the "gform_coupons_discount_amount" filter.
+   - Added GPL to plugin header.
+   - Updated the Start Date and End Date datepickers on the edit coupon page to use the YYYY-MM-DD format.
+   - Updated Plugin URI and Author URI to use https.
+   - Fixed Euro currency formatting of the flat amount when the edit coupon page is displayed.
+
+
 # 2.6 | 2017-04-26
    - Added security enhancement.
    - Added translations.

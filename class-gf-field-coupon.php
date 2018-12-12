@@ -90,7 +90,7 @@ class GF_Field_Coupon extends GF_Field {
 		}
 
 		$disabled_text         = $this->is_form_editor() ? 'disabled="disabled"' : '';
-		$logic_event           = $this->get_conditional_logic_event( 'change' );
+		$logic_event           = version_compare( GFForms::$version, '2.4.1', '<' ) ? $this->get_conditional_logic_event( 'change' ) : '';
 		$placeholder_attribute = $this->get_field_placeholder_attribute();
 		$coupons_detail        = rgpost( "gf_coupons_{$form_id}" );
 		$coupon_codes          = empty( $coupons_detail ) ? '' : rgpost( "input_{$id}" );

@@ -124,6 +124,9 @@ gform.addFilter('gform_product_total', function (total, formId) {
     if (has_coupon) {
         var total_discount = PopulateDiscountInfo(total, formId);
         new_total = total - total_discount;
+        if ( new_total < 0 ) {
+	        new_total = 0;
+        }
     }
 
     jQuery('#gf_coupons_container_' + formId + ' #gf_coupon_spinner').hide();
@@ -165,6 +168,16 @@ function DeleteCoupon(code, formId) {
     }
 
     gformCalculateTotalPrice(formId);
+
+    /**
+     * Enables custom actions to be performed after the coupon is deleted.
+     *
+     * @since 2.8.1
+     *
+     * @param string code   The coupon code which was deleted.
+     * @param int    formId The ID of the current form.
+     */
+    gform.doAction( 'gform_coupons_post_delete_coupon', code, formId );
 }
 
 // add support for conditional logic rules based on the applied coupons
@@ -193,7 +206,7 @@ gform.addAction('gform_post_conditional_logic_field_action', function (formId, a
 // populating correct field ID and form ID.
 gform.addFilter( 'gform_field_meta_raw_input_change', function( fieldMeta, $input, event ) {
 
-	if( $input.attr( 'id' ).indexOf( 'gf_coupon_codes_' ) === 0 ) {
+	if( $input.attr( 'id' ) && $input.attr( 'id' ).indexOf( 'gf_coupon_codes_' ) === 0 ) {
 		fieldMeta.fieldId = $input.attr( 'name' ).split( '_' )[1];
 		fieldMeta.formId  = $input.attr( 'id' ).split( '_' )[3];
 	}

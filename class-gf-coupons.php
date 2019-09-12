@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || die();
+
 GFForms::include_feed_addon_framework();
 
 if ( class_exists( 'GF_Field' ) ) {
@@ -267,9 +269,25 @@ class GFCoupons extends GFFeedAddOn {
 			die( GFCommon::json_encode( $result ) );
 		}
 
-		$can_apply = $this->can_apply_coupon( $coupon_code, $existing_coupon_codes, $feed, $invalid_reason, $form );
+		$can_apply = array(
+			'is_valid'       => $this->can_apply_coupon( $coupon_code, $existing_coupon_codes, $feed, $invalid_reason, $form ),
+			'invalid_reason' => $invalid_reason
+		);
 
-		if ( $can_apply ) {
+		/**
+		 * Allows custom logic to be used to determine if the coupon code can be applied.
+		 *
+		 * @since 2.8.3
+		 *
+		 * @param array  $can_apply             The coupon validation result.
+		 * @param string $coupon_code           The coupon code being validated.
+		 * @param string $existing_coupon_codes The coupon codes which have already been applied.
+		 * @param array  $feed                  The feed (configuration) for the coupon code being validated.
+		 * @param array  $form                  The current form.
+		 */
+		$can_apply = apply_filters( 'gform_coupons_can_apply_coupon', $can_apply, $coupon_code, $existing_coupon_codes, $feed, $form );
+
+		if ( rgar( $can_apply, 'is_valid' ) ) {
 			$coupon_codes = empty( $existing_coupon_codes ) ? $coupon_code : $coupon_code . ',' . $existing_coupon_codes;
 			$coupons      = $this->get_coupons_by_codes( explode( ',', $coupon_codes ), $form );
 
@@ -286,7 +304,7 @@ class GFCoupons extends GFFeedAddOn {
 			}
 
 			$result = array(
-				'is_valid'       => $can_apply,
+				'is_valid'       => true,
 				'coupons'        => $couponss,
 				'invalid_reason' => $invalid_reason,
 				'coupon_code'    => $coupon_code,
@@ -294,7 +312,7 @@ class GFCoupons extends GFFeedAddOn {
 
 			die( GFCommon::json_encode( $result ) );
 		} else {
-			$result = array( 'is_valid' => false, 'invalid_reason' => $invalid_reason );
+			$result = array( 'is_valid' => false, 'invalid_reason' => rgar( $can_apply, 'invalid_reason' ) );
 			die( GFCommon::json_encode( $result ) );
 		}
 

@@ -109,32 +109,32 @@ function DisableApplyButton(formId) {
     }
 }
 
-gform.addFilter('gform_product_total', function (total, formId) {
-    // Ignore forms that don't have a coupon field.
-    if (jQuery('#gf_coupon_code_' + formId).length == 0) {
-        return total;
-    }
+	gform.addFilter( 'gform_product_total', function ( total, formId ) {
+		// Ignore forms that don't have a coupon field.
+		if ( jQuery( '#gf_coupon_code_' + formId ).length == 0 ) {
+			return total;
+		}
 
-    jQuery('#gf_total_no_discount_' + formId).val(total);
+		jQuery( '#gf_total_no_discount_' + formId ).val( total );
 
-    var coupon_code = gformIsHidden(jQuery('#gf_coupon_code_' + formId)) ? '' : jQuery('#gf_coupon_codes_' + formId).val(),
-        has_coupon = coupon_code != '' || jQuery('#gf_coupons_' + formId).val() != '',
-        new_total = total;
+		var coupon_code = gformIsHidden( jQuery( '#gf_coupon_code_' + formId ) ) ? '' : jQuery( '#gf_coupon_codes_' + formId ).val(),
+		has_coupon = coupon_code != '' || jQuery( '#gf_coupons_' + formId ).val() != '',
+		new_total = total;
 
-    if (has_coupon) {
-        var total_discount = PopulateDiscountInfo(total, formId);
-        new_total = total - total_discount;
-        if ( new_total < 0 ) {
-	        new_total = 0;
-        }
-    }
+		if ( has_coupon ) {
+			var total_discount = PopulateDiscountInfo( total, formId );
+			new_total = total - gformRoundPrice( total_discount );
+			if ( new_total < 0 ) {
+				new_total = 0;
+			}
+		}
 
-    jQuery('#gf_coupons_container_' + formId + ' #gf_coupon_spinner').hide();
-    window['new_total_' + formId] = new_total;
-    DisableApplyButton(formId);
+		jQuery( '#gf_coupons_container_' + formId + ' #gf_coupon_spinner' ).hide();
+		window['new_total_' + formId] = new_total;
+		DisableApplyButton( formId );
 
-    return new_total;
-}, 50);
+		return new_total;
+	}, 50 );
 
 function DeleteCoupon(code, formId) {
     // check if coupon code is in the process of being applied

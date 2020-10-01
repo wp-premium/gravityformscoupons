@@ -10,6 +10,15 @@ class GF_Field_Coupon extends GF_Field {
 	public $type = 'coupon';
 
 	/**
+	 * The JSON details for the applied coupon codes.
+	 *
+	 * @since 2.10
+	 *
+	 * @var false|string
+	 */
+	private $_value_details = '';
+
+	/**
 	 * Return the field title, for use in the form editor.
 	 *
 	 * @return string
@@ -39,6 +48,7 @@ class GF_Field_Coupon extends GF_Field {
 		return array(
 			'conditional_logic_field_setting',
 			'label_setting',
+			'label_placement_setting',
 			'admin_label_setting',
 			'css_class_setting',
 			'description_setting',
@@ -46,6 +56,7 @@ class GF_Field_Coupon extends GF_Field {
 			'visibility_setting',
 			'rules_setting',
 			'error_message_setting',
+			'prepopulate_field_setting',
 		);
 	}
 
@@ -92,8 +103,8 @@ class GF_Field_Coupon extends GF_Field {
 		$disabled_text         = $this->is_form_editor() ? 'disabled="disabled"' : '';
 		$logic_event           = version_compare( GFForms::$version, '2.4.1', '<' ) ? $this->get_conditional_logic_event( 'change' ) : '';
 		$placeholder_attribute = $this->get_field_placeholder_attribute();
-		$coupons_detail        = rgpost( "gf_coupons_{$form_id}" );
-		$coupon_codes          = empty( $coupons_detail ) ? '' : rgpost( "input_{$id}" );
+		$coupons_detail        = $this->get_value_details( $value );
+		$coupon_codes          = empty( $coupons_detail ) ? '' : strtoupper( $value );
 
 		$input = "<div class='ginput_container' id='gf_coupons_container_{$form_id}'>" .
 		         "<input id='gf_coupon_code_{$form_id}' class='gf_coupon_code' onkeyup='DisableApplyButton({$form_id});' onchange='DisableApplyButton({$form_id});' onpaste='setTimeout(function(){DisableApplyButton({$form_id});}, 50);' type='text'  {$disabled_text} {$placeholder_attribute} " . $this->get_tabindex() . '/>' .
@@ -200,14 +211,84 @@ class GF_Field_Coupon extends GF_Field {
 			$coupons      = array();
 
 			foreach ( $coupon_codes as $code ) {
-				$price     = GFCommon::to_money( $product_info['products'][ $code ]['price'], rgar( $entry, 'currency' ) );
-				$coupons[] = sprintf( '%s (%s: %s)', $product_info['products'][ $code ]['name'], $code, $price );
+				$key = sprintf( '%d|%s', $this->id, $code );
+				if ( ! isset( $product_info['products'][ $key ] ) ) {
+					// Try the legacy key which is used by entries created before v2.9.3.
+					if ( ! isset( $product_info['products'][ $code ] ) ) {
+						$coupons[] = $code;
+						continue;
+					}
+					$key = $code;
+				}
+				$price     = GFCommon::to_money( $product_info['products'][ $key ]['price'], rgar( $entry, 'currency' ) );
+				$coupons[] = sprintf( '%s (%s: %s)', $product_info['products'][ $key ]['name'], $code, $price );
 			}
 
 			$value = implode( ', ', $coupons );
 		}
 
 		return $value;
+	}
+
+	/**
+	 * Retrieve the field value to be populated or from the submission.
+	 *
+	 * Also retrieves the posted coupon details and stashes it in a class property for use later.
+	 *
+	 * @since 2.10 Overrode to enable dynamic population support.
+	 *
+	 * @param array     $field_values             The dynamic population parameter names with their corresponding values to be populated.
+	 * @param bool|true $get_from_post_global_var Whether to get the value from the $_POST array as opposed to $field_values.
+	 *
+	 * @return string
+	 */
+	public function get_value_submission( $field_values, $get_from_post_global_var = true ) {
+		$value = parent::get_value_submission( $field_values, $get_from_post_global_var );
+
+		if ( ! empty( $value ) ) {
+			$form_id = $this->formId;
+
+			if ( ! empty( $_POST[ 'is_submit_' . $form_id ] ) && $get_from_post_global_var ) {
+				$this->_value_details = rgpost( "gf_coupons_{$form_id}" );
+			}
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Returns the JSON details for the coupon codes found in the field value.
+	 *
+	 * @since 2.10
+	 *
+	 * @param string $value The current field value, the applied coupon codes.
+	 *
+	 * @return false|string
+	 */
+	public function get_value_details( $value ) {
+		if ( ! empty( $this->_value_details ) ) {
+			return $this->_value_details;
+		}
+
+		if ( empty( $value ) ) {
+			return '';
+		}
+
+		$coupons = gf_coupons()->get_coupons_by_codes( $value, $this->formId );
+
+		if ( empty( $coupons ) ) {
+			return '';
+		}
+
+		$details = array();
+
+		foreach ( $coupons as $coupon ) {
+			$details[ $coupon['code'] ] = $coupon;
+		}
+
+		$this->_value_details = json_encode( $details );
+
+		return $this->_value_details;
 	}
 
 }

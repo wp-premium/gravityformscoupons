@@ -1,3 +1,17 @@
+### 2.11 | 2020-09-28
+- Added support for Gravity Forms 2.5.
+- Fixed a rounding issue with the form total for some discounts when used with the PayPal Commerce Platform Add-On.
+- Fixed PHP notices which occur when exporting the coupon field value for entries created since version 2.9.3.
+
+
+### 2.10 | 2020-05-11
+- Added translations for Hebrew, Hindi, Japanese, and Turkish.
+- Added support for dynamic population.
+- Added the label visibility and description placement settings to the field appearance tab.
+- Fixed a notice with PHP 7.4 which occurs when configuring a new coupon.
+- Fixed an issue where a coupon using an integer based code would prevent a product field with a matching ID from appearing in the order summary table.
+
+
 ### 2.9 | 2019-8-14
 - Added the *[gform_coupons_can_apply_coupon](https://docs.gravityforms.com/gform_coupons_can_apply_coupon/)* PHP filter enabling custom logic to be used to determine if the coupon code can be applied.
 - Added the *[gform_coupons_post_delete_coupon](https://docs.gravityforms.com/gform_coupons_post_delete_coupon/)* JS action hook which is triggered after a coupon is deleted from the field.
